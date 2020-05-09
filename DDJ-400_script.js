@@ -16,10 +16,10 @@
 
 var DDJ400 = {};
 
-// JogWheel 
+// JogWheel
 DDJ400.vinylMode = true;
-DDJ400.alpha = 1.0/8;
-DDJ400.beta = DDJ400.alpha/32;
+DDJ400.alpha = 1.0/16;
+DDJ400.beta = DDJ400.alpha/64;
 DDJ400.highspeedScale = 2;
 
 
@@ -30,7 +30,7 @@ DDJ400.keyboardHotCuePoint = [ 0, 0 ]; // selected HotCue point (eg. PAD) in Key
 DDJ400.keyboardModeRefCount = [ 0, 0 ]; // count the currently pressed Pads per Deck
 DDJ400.halftoneToPadMap = [4, 5, 6, 7, 0, 1, 2, 3];
 
-// Save the Shift State 
+// Save the Shift State
 DDJ400.shiftState = [0, 0];
 
 DDJ400.init = function() {
@@ -46,8 +46,8 @@ DDJ400.jogTurn = function(channel, control, value, status, group) {
     const deckNum = channel + 1;
     // wheel center at 64; <64 rew >64 fwd
     const newVal = value - 64;
-    
-    if(engine.isScratching(deckNum)){ 
+
+    if(engine.isScratching(deckNum)){
         engine.scratchTick(deckNum, newVal);
     }
     else{ // fallback
@@ -63,7 +63,7 @@ DDJ400.jogSearch = function(channel, control, value, status, group) {
 };
 
 DDJ400.jogTouch = function(channel, control, value, status, group) {
-    const deckNum = channel + 1;   
+    const deckNum = channel + 1;
     // on touch jog with vinylmode enabled -> enable scratchmode
 
     if(value != 0 && DDJ400.vinylMode){
@@ -91,7 +91,7 @@ DDJ400.switchTempoRange = function(channel, control, value, status, group){
 DDJ400.cueLoopCallLeft = function(channel, control, value, status, group){
     if(value == 0) return; // ignore release
     const loop_on = engine.getValue(group, 'loop_enabled');
-    
+
     if (loop_on){
         // loop halve
         engine.setValue(group, 'loop_scale', 0.5);
@@ -141,7 +141,7 @@ DDJ400.keyboardModePad = function(channel, control, value, status, group){
         // TODO enable LED of the Pad!
         return;
     }
-        
+
     // if hotcue point is set perform coresponding halftone operation
     if(value > 0){
         // count pressed Pad per deck
@@ -185,7 +185,7 @@ DDJ400.shiftPressed = function(channel, control, value, status, group){
 
 DDJ400.waveFormRotate = function(channel, control, value, status, group){
     // select the Waveform to zoom left shift = deck1, right shift = deck2
-    const deckNum = DDJ400.shiftState[0] > 0 ? 1 : 2; 
+    const deckNum = DDJ400.shiftState[0] > 0 ? 1 : 2;
     const oldVal = engine.getValue('[Channel'+deckNum+']', 'waveform_zoom');
     const newVal = oldVal + (value > 0x64 ? 1 : -1);
     engine.setValue('[Channel'+deckNum+']', 'waveform_zoom', newVal);
